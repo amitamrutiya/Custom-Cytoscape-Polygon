@@ -1,10 +1,9 @@
 main {
-  background-color: antiquewhite;
+  background: linear-gradient(to right, #f0f8ff, #e6e6fa);
 }
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
