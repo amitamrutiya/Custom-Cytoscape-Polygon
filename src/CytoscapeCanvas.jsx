@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import cytoscape from "cytoscape";
 
-const shapes = [
+const shapes1 = [
   {
     name: "Internal Storage",
     points:
@@ -73,6 +73,9 @@ const shapes = [
     name: "Vertical Crossbar",
     points: "-0.4653846153846154 -1 0.46153846153846156 -1 0 -1 0 1 -0.46153846153846156 1 0.46153846153846156 1 0 1 0 -1"
   },
+];
+
+const shapes2 = [
   {
     name: "Corner",
     points: "-1 1 -1 -1 1 -1 1 -0.6153846153846154 -0.6153846153846154 -0.6153846153846154 -0.6153846153846154 1 -1 1"
@@ -121,13 +124,25 @@ const shapes = [
     name: "Entity",
     points: "-1 0.6115384615384616 -1 -0.6153846153846154 1 -0.6153846153846154 1 -0.23076923076923078 -1 -0.23076923076923078 -1 0.6153846153846154 1 0.6153846153846154 1 -0.23076923076923078 -1 -0.23076923076923078",
   },
-];
+  {
+    name: "Signal-In Arrow",
+    points: "-1 0.3730769230769231 -1 -0.38461538461538464 0.6153846153846154 -0.38461538461538464 1 0 0.6153846153846154 0.38461538461538464"
+  },
+  {
+    name: "Bend Arrow",
+    points: "-1 1 -1 -0.6153846153846154 0.6153846153846154 -0.6153846153846154 0.6153846153846154 -1 0.9923076923076923 -0.4269230769230769 0.6153846153846154 0.15384615384615385 0.6153846153846154 -0.23076923076923078 -0.6153846153846154 -0.23076923076923078 -0.6153846153846154 1"
+  },
+  {
+    name: "Bend Double Arrow",
+    points: "-0.5423076923076923 1 -1 0.5384615384615384 -0.6923076923076923 0.5384615384615384 -0.6923076923076923 -0.6923076923076923 0.5384615384615384 -0.6923076923076923 0.5384615384615384 -1 1 -0.5384615384615384 0.5384615384615384 -0.07692307692307693 0.5384615384615384 -0.38461538461538464 -0.38461538461538464 -0.38461538461538464 -0.38461538461538464 0.5384615384615384 -0.07692307692307693 0.5384615384615384"
+  },
+]
 
 const CytoscapeShapes = () => {
   useEffect(() => {
-    const cy = cytoscape({
-      container: document.getElementById("cy"), // container to render in
-      elements: shapes.map((shape, index) => ({
+    const cy1 = cytoscape({
+      container: document.getElementById("cy1"), // container to render in
+      elements: shapes1.map((shape, index) => ({
         data: { id: shape.name, label: shape.name },
         position: { x: 150, y: 100 + index * 100 },
       })),
@@ -151,30 +166,71 @@ const CytoscapeShapes = () => {
       layout: {
         name: "circle",
       },
+    });
 
+    const cy2 = cytoscape({
+      container: document.getElementById("cy2"), // container to render in
+      elements: shapes2.map((shape, index) => ({
+        data: { id: shape.name, label: shape.name },
+        position: { x: 150, y: 100 + index * 100 },
+      })),
+      style: [
+        {
+          selector: "node",
+          style: {
+            shape: "polygon",
+            "shape-polygon-points": (ele) => ele.data("points"),
+            width: 100,
+            height: 100,
+            "background-color": "lightblue",
+            label: "data(label)",
+            "text-valign": "center",
+            color: "#000",
+            "font-size": 12,
+            "border-width": 1,
+          },
+        },
+      ],
+      layout: {
+        name: "circle",
+      },
     });
 
     // Assign the points to each node after initialization
-    cy.batch(() => {
-      shapes.forEach((shape) => {
-        cy.getElementById(shape.name).data("points", shape.points);
+    cy1.batch(() => {
+      shapes1.forEach((shape) => {
+        cy1.getElementById(shape.name).data("points", shape.points);
+      });
+    });
+
+    cy2.batch(() => {
+      shapes2.forEach((shape) => {
+        cy2.getElementById(shape.name).data("points", shape.points);
       });
     });
 
     // Cleanup on unmount
-    return () => cy.destroy();
+    return () => {
+      cy1.destroy();
+      cy2.destroy();
+    };
   }, []);
 
   return (
-    <div
-      id="cy"
-      style={{
-        width: "100vw",
-        height: "97vh",
-        border: "1px solid black",
-        background: "radial-gradient(circle, #ffecd2, #fcb69f)"
-      }}
-    />
+    <>
+      <div
+        style={{
+          width: "100vw",
+          height: "97vh",
+          border: "1px solid black",
+          background: "radial-gradient(circle, #ffecd2, #fcb69f)",
+          display: "flex",
+        }}
+      >
+        <div id="cy1" style={{ width: "50%", height: "100%" }} />
+        <div id="cy2" style={{ width: "50%", height: "100%" }} />
+      </div>
+    </>
   );
 };
 
