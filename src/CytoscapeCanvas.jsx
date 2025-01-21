@@ -163,7 +163,7 @@ const shapes2 = [
   },
   {
     name: "QuadArrow",
-    points: "-0.62 0.38 -1 0 -0.62 -0.38 -0.62 -0.15 -0.15 -0.15 -0.15 -0.62 -0.38 -0.62 0 -1 0.38 -0.62 0.15 -0.62 0.15 -0.15 0.62 -0.15 0.62 -0.38 1 0 0.62 0.38 0.62 0.15 0.15 0.15 0.15 0.62 0.38 0.62 0 1 -0.38 0.62 -0.15 0.62 -0.15 0.15 -0.62 0.15",
+    points: "-0.62 0.38 -1 0 -0.62 -0.38 -0.62 -0.15 -0.15 -0.15 -0.15 -0.62 -0.38 -0.62 0 -1 0.38 -0.62 0.23 -0.62 0.23 -0.46 0.46 -0.46 0.46 -0.23 0.62 -0.23 0.62 -0.38 1 0 0.62 0.38 0.62 0.23 0.46 0.23 0.46 0.46 0.23 0.46 0.23 0.62 0.38 0.62 0 1 -0.38 0.62 -0.23 0.62 -0.23 0.46 -0.46 0.46 -0.46 0.23 -0.62 0.23",
   },
   {
     name: "BendArrow",
@@ -239,6 +239,19 @@ const CytoscapeShapes = () => {
             "border-width": 1,
           },
         },
+        {
+          selector: "node:selected",
+          style: {
+            "background-color": "#ff7f50",
+            "border-width": 3,
+            "border-color": "#ff4500",
+            "border-opacity": 0.8,
+            "background-opacity": 0.9,
+            transform: "scale(1.2)",
+            "transition-property": "background-color, border-width, transform",
+            "transition-duration": "0.3s"
+          }
+        }
       ],
       layout: {
         name: "circle",
@@ -267,6 +280,19 @@ const CytoscapeShapes = () => {
             "border-width": 1,
           },
         },
+        {
+          selector: "node:selected",
+          style: {
+            "background-color": "#ff7f50",
+            "border-width": 3,
+            "border-color": "#ff4500",
+            "border-opacity": 0.8,
+            "background-opacity": 0.9,
+            transform: "scale(1.2)",
+            "transition-property": "background-color, border-width, transform",
+            "transition-duration": "0.3s"
+          }
+        }
       ],
       layout: {
         name: "circle",
@@ -284,6 +310,32 @@ const CytoscapeShapes = () => {
       shapes2.forEach((shape) => {
         cy2.getElementById(shape.name).data("points", shape.points);
       });
+    });
+
+    // Add event listeners after initialization
+    cy1.on('tap', 'node', function (evt) {
+      const node = evt.target;
+      cy1.elements().unselect();
+      node.select();
+    });
+
+    cy2.on('tap', 'node', function (evt) {
+      const node = evt.target;
+      cy2.elements().unselect();
+      node.select();
+    });
+
+    // Click on background to deselect
+    cy1.on('tap', function (evt) {
+      if (evt.target === cy1) {
+        cy1.elements().unselect();
+      }
+    });
+
+    cy2.on('tap', function (evt) {
+      if (evt.target === cy2) {
+        cy2.elements().unselect();
+      }
     });
 
     // Cleanup on unmount
